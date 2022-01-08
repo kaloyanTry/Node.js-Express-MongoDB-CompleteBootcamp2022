@@ -43,9 +43,11 @@ const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.htm
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
 const dataObj = JSON.parse(data);
 
+// working with 3d modules:
 const slugs = dataObj.map((el) => slugify(el.productName, { lower: true }));
-// console.log(slugs);
+// console.log(slugs); // take/slug and lowercase the last parts of elements/productNames
 
+// creating server
 const server = http.createServer((req, res) => {
   const { query, pathname } = url.parse(req.url, true);
 
