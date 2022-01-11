@@ -6,12 +6,15 @@ fs.readFile(`${__dirname}/dog.txt`, (err, data) => {
 
   superagent
     .get(`https://dog.ceo/api/breed/${data}/images/random`)
-    .end((end, res) => {
+    .then((res) => {
       console.log(res.body.message);
 
       fs.writeFile(`dog-img.txt`, res.body.message, (err) => {
         if (err) return console.log(err.message);
         console.log('Random dog image saved to the file.');
       });
+    })
+    .catch((err) => {
+      console.log(err.message);
     });
 });
