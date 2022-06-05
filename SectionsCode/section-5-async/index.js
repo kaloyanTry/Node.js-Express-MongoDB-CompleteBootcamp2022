@@ -56,7 +56,6 @@ const superagent = require('superagent');
 //     console.log(err.message);
 //   });
 ////////////////////////////////////////////////////////////////////////////
-
 // 3. Async/await Modern solution:
 const readFilePromise = (file) => {
   return new Promise((resolve, reject) => {
