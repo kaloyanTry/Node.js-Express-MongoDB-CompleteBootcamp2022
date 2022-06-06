@@ -56,7 +56,8 @@ const superagent = require('superagent');
 //     console.log(err.message);
 //   });
 ////////////////////////////////////////////////////////////////////////////
-// 3. Async/await Modern solution:
+
+// // 3. Async/await Modern solution:
 const readFilePromise = (file) => {
   return new Promise((resolve, reject) => {
     fs.readFile(file, (err, data) => {
@@ -88,6 +89,7 @@ const getDogPic = async () => {
     console.log('Random dog image saved to file.');
   } catch (err) {
     console.log(err.message);
+    throw err;
   }
 };
 getDogPic();
