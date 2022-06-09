@@ -1,11 +1,15 @@
-const fs = require('fs');
 const express = require('express');
 const morgan = require('morgan');
 
+const tourRouter = require('./routes/tourRoutes');
+const userRouter = require('./routes/userRoutes');
+
 const app = express();
+
 // 1) Middleware
 app.use(morgan('dev'));
-app.use(express.json()); //middleware = between request and response
+
+app.use(express.json()); //middleware = between request and response = .use
 
 app.use((req, res, next) => {
   console.log('Hello from the middleware 👏');
@@ -16,87 +20,16 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
-);
 
-// 2) Routs Handler functions:
-const getAllTours = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    requsetedAt: req.requestTime,
-    results: tours.length,
-    data: { tours },
-  });
-};
+// 2) Routs Handler functions: in separate file.
 
-const getTour = (req, res) => {
-  const id = req.params.id * 1;
-  const tour = tours.find((el) => el.id === id);
-  if (!tour) {
-    res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
+// 3) Routers: in separate file.
 
-  res.status(200).json({
-    status: 'success',
-    data: { tour },
-  });
-};
+// Mounting Middleware:
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
-const createTour = (req, res) => {
-  const newId = tours[tours.length - 1].id + 1;
-  const newTour = Object.assign({ id: newId }, req.body);
-  tours.push(newTour);
-
-  fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
-    JSON.stringify(tours),
-    (err) => {
-      res.status(201).json({
-        status: 'success',
-        data: { tour: newTour },
-      });
-    }
-  );
-};
-
-const updateTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-  res.status(200).json({
-    status: 'success',
-    message: 'Updated tour here...',
-  });
-};
-
-const deleteTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-};
-
-// 3) Routes:
-app.route('/api/v1/tours').get(getAllTours).post(createTour);
-
-app
-  .route('/api/v1/tours/:id')
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour);
+module.exports = app;
 
 // Old way without refactoring code:
 // app.get('/api/v1/tours', getAllTours);
@@ -106,10 +39,6 @@ app
 // app.delete('/api/v1/tours/:id', deleteTour);
 
 // 4) Start server:
-const port = 3000;
-app.listen(port, () => {
-  console.log(`App running on port ${port}...`);
-});
 
 ///////////////////////////////////////////////
 // 3. Row code, without refactoring:
