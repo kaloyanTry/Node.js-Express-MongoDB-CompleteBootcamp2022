@@ -5,7 +5,6 @@ const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
-
 const app = express();
 
 if (process.env.NODE_ENV === 'development') {
@@ -28,7 +27,6 @@ app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`));
 });
 
-// Error handling:
 app.use(globalErrorHandler);
 
 module.exports = app;
